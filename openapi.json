@@ -1,0 +1,227 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Crud",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Cadastrar  usuário",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created. Recurso criado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Verifique os requisitos para cadastro do recurso."
+          },
+          "403": {
+            "description": "Forbidden. É necessário um token de autenticação válido para criar este recurso."
+          }
+        }
+      },
+      "get": {
+        "summary": "Obter todos os usuários",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponse"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. É necessário um token de autenticação válido para criar este recurso."
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Obter um  usuário",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do usuário",
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Recurso retornado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": " Not Found. O recurso solicitado não foi encontrado na base de dados."
+          },
+          "403": {
+            "description": "Forbidden. É necessário um token de autenticação válido para acessar este recurso."
+          },
+          "400": {
+            "description": "Bad Request. Verifique os requisitos para acessar este recurso."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID do usuário"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Endereço de e-mail do usuário"
+          },
+          "password": {
+            "type": "string",
+            "description": "Senha do usuário",
+            "minLength": 6,
+            "errorMessage": "A senha deve ter pelo menos 6 caracteres e conter pelo menos uma letra maiúscula, uma letra minúscula e um número"
+          },
+          "birthAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de nascimento do usuário (opcional)"
+          },
+          "role": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ],
+            "description": "Função do usuário (opcional). Valores possíveis: 1 - Admin, 2 - Usuário regular"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de criação do usuário"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de atualização do usuário"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "password"
+        ]
+      },
+      "UserCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Endereço de e-mail do usuário"
+          },
+          "password": {
+            "type": "string",
+            "description": "Senha do usuário (armazenada de forma segura usando bcrypt)",
+            "minLength": 6,
+            "errorMessage": "A senha deve ter pelo menos 6 caracteres e conter pelo menos uma letra maiúscula, uma letra minúscula e um número"
+          },
+          "birthAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de nascimento do usuário (opcional)"
+          },
+          "role": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ],
+            "default": 1,
+            "description": "Função do usuário (opcional). Valores possíveis: 1 - Usuário regular, 2 - Admin "
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "password"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Autenticação baseada em token JWT. É necessário fornecer um token válido para acessar os recursos. Faça o login como Administrador para obter o token."
+      }
+    }
+  }
+}
