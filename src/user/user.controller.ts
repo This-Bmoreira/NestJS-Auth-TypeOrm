@@ -11,28 +11,28 @@ export class UserController {
     return { users: [] }
   }
   @Get(':id')
-  async readOnly(@Param() Param) {
-    return { user: {}, Param }
+  async readOnly(@Param() param) {
+    return { user: {}, param }
   }
   @Put(':id')
-  async update(@Body() body, @Param() Param) {
+  async update(@Body() body, @Param() param) {
     return {
       body,
-      Param
+      param
     }
   }
   @Patch(':id')
-  async updatePartial(@Body() body, @Param() Param) {
+  async updatePartial(@Body() body, @Param() param) {
     return {
       body,
-      Param
+      param
     }
   }
 
   @Delete(':id')
-  async delete(@Param() Param) {
+  async delete(@Param() param) {
     return {
-      Param
+      param
     }
   }
 
