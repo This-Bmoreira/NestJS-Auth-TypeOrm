@@ -14,21 +14,21 @@ export class UserController {
     return { users: [] }
   }
   @Get(':id')
-  async readOnly(@Param() param) {
-    return { user: {}, param }
+  async readOnly(@Param('id', ParseIntPipe) id: number) {
+    return { user: {}, id }
   }
   @Put(':id')
-  async update(@Body() body: UpdatePutUserDTO, @Param() param) {
+  async update(@Body() body: UpdatePutUserDTO, @Param('id', ParseIntPipe) id: number) {
     return {
       body,
-      param
+      id
     }
   }
   @Patch(':id')
-  async updatePartial(@Body() body: UpdatePatchUserDTO, @Param() param) {
+  async updatePartial(@Body() body: UpdatePatchUserDTO, @Param('id', ParseIntPipe) id: number) {
     return {
       body,
-      param
+      id
     }
   }
 
