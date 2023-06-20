@@ -6,7 +6,7 @@ export class CreateUserDTO {
   name: string;
 
   @IsEmail()
-  email: number;
+  email: string;
 
   @IsStrongPassword({
     minLength: 6,
