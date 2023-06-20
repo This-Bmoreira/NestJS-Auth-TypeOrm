@@ -42,13 +42,11 @@ export class Migrate1687265506002 implements MigrationInterface {
                 {
                     name: 'createdAt',
                     type: 'timestamp',
-                    precision: 6,
                     default: 'CURRENT_TIMESTAMP()',
                 },
                 {
                     name: 'updatedAt',
                     type: 'timestamp',
-                    precision: 6,
                     default: 'CURRENT_TIMESTAMP()',
                 },
             ],
