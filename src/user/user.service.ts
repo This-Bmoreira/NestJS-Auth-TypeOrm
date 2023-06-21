@@ -30,33 +30,34 @@ export class UserService {
   }
 
   async show(id: number) {
-    const user = await this.findUserById(id)
-    return user
+    await this.exists(id)
+    return this.usersRepository.findOneBy({
+      id,
+    });
   }
   async update(
     id: number,
     { email, name, password, birthAt }: UpdatePutUserDTO,
   ) {
-    // Verificar se o usuário existe
-    const user = await this.findUserById(id)
-
-    // Atualizar os dados do usuário
-    user.email = email;
-    user.name = name;
-    user.password = password;
-    user.birthAt = birthAt ? new Date(birthAt) : null;
-
-    await this.usersRepository.save(user);
-
-    // Retornar o usuário atualizado
+    await this.exists(id);
+    await this.usersRepository.update(id, {
+      email,
+      name,
+      password,
+      birthAt: birthAt ? new Date(birthAt) : null,
+    });
     return this.show(id);
   }
 
-  async findUserById(id: number) {
-    const user = await this.usersRepository.findOneBy({ id });
-    if (!user) {
-      throw new NotFoundException('Recurso não encontrado.');
+  async exists(id: number) {
+    if (
+      !(await this.usersRepository.exist({
+        where: {
+          id,
+        },
+      }))
+    ) {
+      throw new NotFoundException(`O usuário ${id} não existe.`);
     }
-    return user
   }
 }
