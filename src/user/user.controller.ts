@@ -12,8 +12,8 @@ export class UserController {
     return this.userService.create(body)
   }
   @Get()
-  async read() {
-    return { users: [] }
+  async list() {
+    return this.userService.list()
   }
   @Get(':id')
   async readOnly(@Param('id', ParseIntPipe) id: number) {
