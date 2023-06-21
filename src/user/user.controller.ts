@@ -16,8 +16,8 @@ export class UserController {
     return this.userService.list()
   }
   @Get(':id')
-  async readOnly(@Param('id', ParseIntPipe) id: number) {
-    return { user: {}, id }
+  async show(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.show(id)
   }
   @Put(':id')
   async update(@Body() body: UpdatePutUserDTO, @Param('id', ParseIntPipe) id: number) {
