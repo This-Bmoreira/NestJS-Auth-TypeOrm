@@ -30,12 +30,7 @@ export class UserService {
   }
 
   async show(id: number) {
-    const user = await this.usersRepository.findOneBy({
-      id
-    })
-    if (!user) {
-      throw new NotFoundException('Recurso não encontrado.');
-    }
+    const user = await this.findUserById(id)
     return user
   }
   async update(
@@ -43,11 +38,8 @@ export class UserService {
     { email, name, password, birthAt }: UpdatePutUserDTO,
   ) {
     // Verificar se o usuário existe
-    const user = await this.usersRepository.findOneBy({ id });
-    if (!user) {
-      throw new NotFoundException('Recurso não encontrado.');
-    }
-    
+    const user = await this.findUserById(id)
+
     // Atualizar os dados do usuário
     user.email = email;
     user.name = name;
@@ -58,5 +50,13 @@ export class UserService {
 
     // Retornar o usuário atualizado
     return this.show(id);
+  }
+
+  async findUserById(id: number) {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Recurso não encontrado.');
+    }
+    return user
   }
 }
