@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDTO } from "./DTO/create-user.dto";
+import { UpdatePatchUserDTO } from "./DTO/update-patch-user.dto";
 import { UpdatePutUserDTO } from "./DTO/update-put-user.dto";
 import { UserEntity } from "./entity/user.entity";
 
@@ -46,6 +47,36 @@ export class UserService {
       password,
       birthAt: birthAt ? new Date(birthAt) : null,
     });
+    return this.show(id);
+  }
+
+
+  async updatePartial(
+    id: number,
+    { email, name, password, birthAt }: UpdatePatchUserDTO,
+  ) {
+    await this.exists(id);
+
+    const data: any = {};
+
+    if (birthAt) {
+      data.birthAt = new Date(birthAt);
+    }
+
+    if (email) {
+      data.email = email;
+    }
+
+    if (name) {
+      data.name = name;
+    }
+
+    if (password) {
+      data.password = password
+    }
+
+    await this.usersRepository.update(id, data);
+
     return this.show(id);
   }
 
