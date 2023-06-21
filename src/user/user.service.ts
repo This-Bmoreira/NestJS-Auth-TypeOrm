@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDTO } from "./DTO/create-user.dto";
@@ -24,7 +24,18 @@ export class UserService {
     const user = this.usersRepository.create(data);
     return this.usersRepository.save(user);
   }
-  async list () {
+  async list() {
     return this.usersRepository.find()
   }
+
+  async show(id: number) {
+    const user = await this.usersRepository.findOneBy({
+      id
+    })
+    if (!user) {
+      throw new NotFoundException('Recurso não encontrado.');
+    }
+    return user
+  }
+
 }
