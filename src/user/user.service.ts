@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDTO } from "./DTO/create-user.dto";
+import { UpdatePutUserDTO } from "./DTO/update-put-user.dto";
 import { UserEntity } from "./entity/user.entity";
 
 @Injectable()
@@ -37,5 +38,25 @@ export class UserService {
     }
     return user
   }
+  async update(
+    id: number,
+    { email, name, password, birthAt }: UpdatePutUserDTO,
+  ) {
+    // Verificar se o usuário existe
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Recurso não encontrado.');
+    }
+    
+    // Atualizar os dados do usuário
+    user.email = email;
+    user.name = name;
+    user.password = password;
+    user.birthAt = birthAt ? new Date(birthAt) : null;
 
+    await this.usersRepository.save(user);
+
+    // Retornar o usuário atualizado
+    return this.show(id);
+  }
 }
