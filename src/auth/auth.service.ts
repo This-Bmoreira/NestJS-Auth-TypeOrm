@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,5 +16,17 @@ export class AuthService {
 
   async checkToken() {
     // return this.jwtService.verify()
+  }
+
+  async login(email: string, password: string) {
+    const user = await this.usersRepository.findOneBy({
+      email,
+      password
+    });
+    if (!user) {
+      throw new UnauthorizedException('E-mail e/ou senha incorretos');
+    }
+    return user;
+
   }
 }
