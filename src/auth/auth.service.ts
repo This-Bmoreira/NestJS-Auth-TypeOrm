@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
+import { AuthRegisterDTO } from './DTO/auth-register.dto';
 @Injectable()
 export class AuthService {
   private issuer = 'login';
@@ -61,5 +62,9 @@ export class AuthService {
       password,
     });
     return true;
+  }
+  async register(data: AuthRegisterDTO) {
+    const user = await this.userService.create(data);
+    return this.createToken(user);
   }
 }

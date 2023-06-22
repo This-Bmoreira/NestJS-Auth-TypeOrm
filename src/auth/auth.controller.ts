@@ -1,4 +1,4 @@
-import { Post, Body } from "@nestjs/common";
+import { Body, Post } from "@nestjs/common";
 import { UserService } from "../user/user.service";
 import { AuthForgetDTO } from "./DTO/auth-forget.dto";
 import { AuthLoginDTO } from "./DTO/auth-login.dto";
@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: AuthRegisterDTO) {
-    return this.userService.create(body);
+    return this.authService.register(body);
   }
 
   @Post('forget')
