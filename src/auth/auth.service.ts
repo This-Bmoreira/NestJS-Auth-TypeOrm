@@ -27,6 +27,16 @@ export class AuthService {
       throw new UnauthorizedException('E-mail e/ou senha incorretos');
     }
     return user;
-
+  }
+  
+  async forget(email: string) {
+    const user = await this.usersRepository.findOneBy({
+      email,
+    });
+    if (!user) {
+      throw new UnauthorizedException('E-mail senha incorreto');
+    }
+    // To DO: Enviar e e-mail...
+    return true;
   }
 }
