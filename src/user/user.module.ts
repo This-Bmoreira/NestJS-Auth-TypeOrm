@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
-import { UserIdCheckMiddleware } from './middleware/user-id-check.middleware';
+import { UserIdCheckMiddleware } from '../middleware/user-id-check.middleware';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
