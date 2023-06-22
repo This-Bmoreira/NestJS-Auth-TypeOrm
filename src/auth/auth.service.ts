@@ -28,7 +28,6 @@ export class AuthService {
     }
     return user;
   }
-  
   async forget(email: string) {
     const user = await this.usersRepository.findOneBy({
       email,
@@ -39,4 +38,13 @@ export class AuthService {
     // To DO: Enviar e e-mail...
     return true;
   }
+  async reset(password: string, token: string) {
+    // TO DO: validar o token...
+    const id = 0;
+    await this.usersRepository.update(id ,{
+        password,
+    });
+    return true;
+  }
+
 }
