@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
+import { UserIdCheckMiddleware } from './middleware/user-id-check.middleware';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -10,4 +11,12 @@ import { UserService } from './user.service';
   providers: [UserService],
   exports: [],
 })
-export class UserModule { }
+
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserIdCheckMiddleware).forRoutes({
+      path: 'users/:id',
+      method: RequestMethod.ALL,
+    });
+  }
+}
