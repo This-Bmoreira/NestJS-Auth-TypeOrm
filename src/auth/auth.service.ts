@@ -16,19 +16,21 @@ export class AuthService {
     private readonly userService: UserService
   ) { }
   async createToken(user: UserEntity) {
-    return this.jwtService.sign(
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
-      {
-        expiresIn: '7 days',
-        subject: String(user.id),
-        issuer: this.issuer,
-        audience: this.audience,
-      },
-    );
+    return {
+      accessToken: this.jwtService.sign(
+        {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+        {
+          expiresIn: '7 days',
+          subject: String(user.id),
+          issuer: this.issuer,
+          audience: this.audience,
+        },
+      )
+    };
   }
 
   async checkToken() {
