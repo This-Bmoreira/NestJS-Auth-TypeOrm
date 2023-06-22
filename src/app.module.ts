@@ -5,10 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserEntity } from './user/entity/user.entity';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    AuthModule,
     UserModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -23,5 +25,6 @@ import { UserModule } from './user/user.module';
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [AppService]
 })
 export class AppModule { }
