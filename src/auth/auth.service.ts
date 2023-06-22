@@ -3,15 +3,31 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entity/user.entity';
+import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
+  private issuer = 'login';
+  private audience = 'users';
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>
+    private usersRepository: Repository<UserEntity>,
+    private readonly userService: UserService
   ) { }
-  async createToken() {
-    // return this.jwtService.sign()
+  async createToken(user: UserEntity) {
+    return this.jwtService.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      {
+        expiresIn: '7 days',
+        subject: String(user.id),
+        issuer: this.issuer,
+        audience: this.audience,
+      },
+    );
   }
 
   async checkToken() {
@@ -26,7 +42,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('E-mail e/ou senha incorretos');
     }
-    return user;
+    return this.createToken(user);
   }
   async forget(email: string) {
     const user = await this.usersRepository.findOneBy({
@@ -36,15 +52,14 @@ export class AuthService {
       throw new UnauthorizedException('E-mail senha incorreto');
     }
     // To DO: Enviar e e-mail...
-    return true;
+    return this.createToken(user);
   }
   async reset(password: string, token: string) {
     // TO DO: validar o token...
     const id = 0;
-    await this.usersRepository.update(id ,{
-        password,
+    await this.usersRepository.update(id, {
+      password,
     });
     return true;
   }
-
 }
