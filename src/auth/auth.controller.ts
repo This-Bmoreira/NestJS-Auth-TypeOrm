@@ -5,6 +5,7 @@ import { AuthLoginDTO } from "./DTO/auth-login.dto";
 import { AuthRegisterDTO } from "./DTO/auth-register.dto";
 import { AuthResetDto } from "./DTO/auth-reset.dto";
 import { AuthService } from "./auth.service";
+import { AuthMeDTO } from "./DTO/auth-me.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -33,7 +34,7 @@ export class AuthController {
   }
 
   @Post('me')
-  async me(@Body() body) {
+  async me(@Body() body: AuthMeDTO) {
     return this.authService.checkToken(body.token);
   }
 }
