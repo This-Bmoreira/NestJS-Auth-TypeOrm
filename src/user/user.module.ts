@@ -1,17 +1,20 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './entity/user.entity';
+import { AuthModule } from '../auth/auth.module';
 import { UserIdCheckMiddleware } from '../middleware/user-id-check.middleware';
+import { UserEntity } from './entity/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    forwardRef(() => AuthModule),
+    TypeOrmModule.forFeature([UserEntity]),
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],
 })
-
 export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(UserIdCheckMiddleware).forRoutes({

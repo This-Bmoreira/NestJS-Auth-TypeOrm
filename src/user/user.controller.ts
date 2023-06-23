@@ -2,13 +2,14 @@ import { Body, Controller, Delete, Get, Patch, Post, Put, UseGuards } from "@nes
 import { ParamId } from "../decorators/param-id.decorator";
 import { Roles } from "../decorators/role.decorator";
 import { Role } from "../enums/role.enum";
+import { AuthGuard } from "../guards/auth.guard";
 import { RoleGuard } from "../guards/role.guard";
 import { CreateUserDTO } from "./DTO/create-user.dto";
 import { UpdatePatchUserDTO } from "./DTO/update-patch-user.dto";
 import { UpdatePutUserDTO } from "./DTO/update-put-user.dto";
 import { UserService } from "./user.service";
 
-@UseGuards(RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -17,7 +18,7 @@ export class UserController {
   async create(@Body() body: CreateUserDTO) {
     return this.userService.create(body)
   }
-  @Roles(Role.Admin, Role.User)
+  @Roles(Role.Admin)
   @Get()
   async list() {
     return this.userService.list()
