@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -24,7 +24,7 @@ export class AuthService {
           email: user.email,
         },
         {
-          expiresIn: '7 days',
+          expiresIn: '50 days',
           subject: String(user.id),
           issuer: this.issuer,
           audience: this.audience,
@@ -33,8 +33,17 @@ export class AuthService {
     };
   }
 
-  async checkToken() {
-    // return this.jwtService.verify()
+  async checkToken(token: string) {
+    try {
+      const data = this.jwtService.verify(token, {
+        audience: this.audience,
+        issuer: this.issuer,
+      });
+      return data;
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
+
   }
 
   async login(email: string, password: string) {
