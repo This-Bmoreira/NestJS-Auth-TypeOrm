@@ -38,7 +38,7 @@ export class UserService {
   }
   async update(
     id: number,
-    { email, name, password, birthAt }: UpdatePutUserDTO,
+    { email, name, password, birthAt, role }: UpdatePutUserDTO,
   ) {
     await this.exists(id);
     await this.usersRepository.update(id, {
@@ -46,6 +46,7 @@ export class UserService {
       name,
       password,
       birthAt: birthAt ? new Date(birthAt) : null,
+      role
     });
     return this.show(id);
   }
@@ -53,7 +54,7 @@ export class UserService {
 
   async updatePartial(
     id: number,
-    { email, name, password, birthAt }: UpdatePatchUserDTO,
+    { email, name, password, birthAt, role }: UpdatePatchUserDTO,
   ) {
     await this.exists(id);
 
@@ -74,13 +75,16 @@ export class UserService {
     if (password) {
       data.password = password
     }
+    if (role) {
+      data.password = role
+    }
 
     await this.usersRepository.update(id, data);
 
     return this.show(id);
   }
 
-  async delete (id: number) {
+  async delete(id: number) {
     await this.exists(id);
     await this.usersRepository.delete(id);
     return true;
