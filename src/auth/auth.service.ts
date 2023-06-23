@@ -46,6 +46,15 @@ export class AuthService {
 
   }
 
+  async isValidToken(token: string) {
+    try {
+      this.checkToken(token);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async login(email: string, password: string) {
     const user = await this.usersRepository.findOneBy({
       email,
