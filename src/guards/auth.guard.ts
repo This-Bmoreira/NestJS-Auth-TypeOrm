@@ -18,6 +18,7 @@ export class AuthGuard implements CanActivate {
         (authorization ?? ' ').split(' ')[1],
       );
       request.tokenPayLoad = data;
+      request.user = await this.userService.show(data.id);
       return true;
     } catch (e) {
       return false;
