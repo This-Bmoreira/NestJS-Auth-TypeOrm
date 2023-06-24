@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import * as bcrypt from 'bcrypt';
 import { Repository } from "typeorm";
 import { CreateUserDTO } from "./DTO/create-user.dto";
 import { UpdatePatchUserDTO } from "./DTO/update-patch-user.dto";
 import { UpdatePutUserDTO } from "./DTO/update-put-user.dto";
 import { UserEntity } from "./entity/user.entity";
-
 @Injectable()
 export class UserService {
   constructor(
@@ -23,6 +23,8 @@ export class UserService {
     ) {
       throw new BadRequestException('Este e-mail já está sendo usado.');
     }
+    const salt = await bcrypt.genSalt();
+    data.password = await bcrypt.hash(data.password, salt);
     const user = this.usersRepository.create(data);
     return this.usersRepository.save(user);
   }
@@ -41,6 +43,8 @@ export class UserService {
     { email, name, password, birthAt, role }: UpdatePutUserDTO,
   ) {
     await this.exists(id);
+    const salt = await bcrypt.genSalt();
+    password = await bcrypt.hash(password, salt);
     await this.usersRepository.update(id, {
       email,
       name,
@@ -48,6 +52,7 @@ export class UserService {
       birthAt: birthAt ? new Date(birthAt) : null,
       role
     });
+
     return this.show(id);
   }
 
@@ -73,7 +78,8 @@ export class UserService {
     }
 
     if (password) {
-      data.password = password
+      const salt = await bcrypt.genSalt();
+      data.password = await bcrypt.hash(password, salt);
     }
     if (role) {
       data.password = role
