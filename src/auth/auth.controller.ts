@@ -1,5 +1,6 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { User } from "../decorators/user.decorator";
+import { FileService } from "../file/file.service";
 import { AuthGuard } from "../guards/auth.guard";
 import { UserService } from "../user/user.service";
 import { AuthForgetDTO } from "./DTO/auth-forget.dto";
@@ -13,6 +14,7 @@ export class AuthController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
+    private readonly fileService: FileService
   ) { }
   @Post('login')
   async login(@Body() { email, password }: AuthLoginDTO) {
