@@ -8,7 +8,9 @@ import { CreateUserDTO } from "./DTO/create-user.dto";
 import { UpdatePatchUserDTO } from "./DTO/update-patch-user.dto";
 import { UpdatePutUserDTO } from "./DTO/update-put-user.dto";
 import { UserService } from "./user.service";
+import { ThrottlerGuard } from "@nestjs/throttler";
 
+@UseGuards(ThrottlerGuard)
 @Roles(Role.Admin)
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
