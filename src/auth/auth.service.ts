@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
@@ -15,7 +16,7 @@ export class AuthService {
     private usersRepository: Repository<UserEntity>,
     private readonly userService: UserService
   ) { }
-   createToken(user: UserEntity) {
+  createToken(user: UserEntity) {
     return {
       accessToken: this.jwtService.sign(
         {
@@ -33,7 +34,7 @@ export class AuthService {
     };
   }
 
-   checkToken(token: string) {
+  checkToken(token: string) {
     try {
       const data = this.jwtService.verify(token, {
         audience: this.audience,
@@ -58,9 +59,11 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.usersRepository.findOneBy({
       email,
-      password
     });
     if (!user) {
+      throw new UnauthorizedException('E-mail e/ou senha incorretos');
+    }
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('E-mail e/ou senha incorretos');
     }
     return this.createToken(user);
