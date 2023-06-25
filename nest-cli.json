@@ -8,6 +8,10 @@
       {
         "include": "openapi.json",
         "outDir": "dist"
+      },
+      {
+        "include": "templates/**/*",
+        "outDir": "dist"
       }
     ]
   }
