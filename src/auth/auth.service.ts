@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,7 +15,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly mailer: MailerService
   ) { }
   createToken(user: UserEntity) {
     return {
@@ -75,16 +77,53 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('E-mail senha incorreto');
     }
-    // To DO: Enviar e e-mail...
-    return this.createToken(user);
+    const token = this.jwtService.sign(
+      {
+        id: user.id
+      },
+      {
+        expiresIn: '30 minutes',
+        subject: String(user.id),
+        issuer: 'forget',
+        audience: 'users',
+      },
+    )
+    await this.mailer.sendMail({
+      subject: 'Recuperação de senha',
+      to: 'a@gmail.com',
+      template: 'forget',
+      context: {
+        name: user.name,
+        token
+      }
+    })
+    return true
+    // return this.createToken(user);
   }
   async reset(password: string, token: string) {
-    // TO DO: validar o token...
-    const id = 0;
-    await this.usersRepository.update(id, {
-      password,
-    });
-    return true;
+    try {
+      const data: any = this.jwtService.verify(token, {
+        issuer: 'forget',
+        audience: 'users',
+      });
+
+      if (isNaN(Number(data.id))) {
+        throw new BadRequestException('Token é inválido.');
+      }
+
+      const salt = await bcrypt.genSalt();
+      password = await bcrypt.hash(password, salt);
+
+      await this.usersRepository.update(Number(data.id), {
+        password,
+      });
+
+      const user = await this.userService.show(Number(data.id));
+
+      return this.createToken(user);
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
   }
   async register(data: AuthRegisterDTO) {
     const user = await this.userService.create(data);
