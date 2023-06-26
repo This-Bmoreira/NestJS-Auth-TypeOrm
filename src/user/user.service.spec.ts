@@ -20,8 +20,18 @@ describe('UserService', () => {
     expect(userService).toBeDefined()
   })
 
-  test('method create', async () => {
-    const result = await userService.create(createUserDTO)
-    expect(result).toEqual(userEntityList[0])
+  describe('create', () => {
+    test('method create', async () => {
+      const result = await userService.create(createUserDTO)
+      expect(result).toEqual(userEntityList[0])
+    })
   })
+
+  describe('read', () => {
+    test('method list', async () => {
+      const result = await userService.list()
+      expect(result).toEqual(userEntityList)
+    })
+  })
+
 })
