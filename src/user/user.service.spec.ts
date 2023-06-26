@@ -1,5 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { createUserDTO } from "../testing/create-use-dto.mock";
 import { userRepositoryMock } from "../testing/use-repository.mock";
+import { userEntityList } from "../testing/user.entity-list.mocks";
 import { UserService } from "./user.service";
 
 describe('UserService', () => {
@@ -16,5 +18,10 @@ describe('UserService', () => {
 
   test('Validar a definição ', () => {
     expect(userService).toBeDefined()
+  })
+
+  test('method create', async () => {
+    const result = await userService.create(createUserDTO)
+    expect(result).toEqual(userEntityList[0])
   })
 })
