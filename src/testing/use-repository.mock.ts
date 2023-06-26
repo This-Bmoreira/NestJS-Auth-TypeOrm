@@ -8,9 +8,9 @@ export const userRepositoryMock = {
     create: jest.fn(),
     save: jest.fn().mockResolvedValue(userEntityList[0]),
     find: jest.fn().mockResolvedValue(userEntityList),
-    findOneBy: jest.fn(),
+    findOneBy: jest.fn().mockResolvedValue(userEntityList[0]),
     update: jest.fn(),
     delete: jest.fn(),
-    exist: jest.fn(),
+    exist: jest.fn().mockResolvedValue(true)
   }
 }
