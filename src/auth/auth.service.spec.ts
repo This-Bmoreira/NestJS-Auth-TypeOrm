@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { accessToken } from "../testing/access-token.mock";
+import { authRegisterDTO } from "../testing/auth-register-dto.mock";
 import { jwtPayload } from "../testing/jwt-payload.mock";
 import { jwtServiceMock } from "../testing/jwt-service.mock";
 import { mailerServiceMock } from "../testing/mailer-service.mock";
@@ -7,6 +8,7 @@ import { userRepositoryMock } from "../testing/use-repository.mock";
 import { userServiceMock } from "../testing/user-service.mock";
 import { userEntityList } from "../testing/user.entity-list.mocks";
 import { AuthService } from "./auth.service";
+
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -48,5 +50,22 @@ describe('AuthService', () => {
     })
   })
 
+  describe('auth', () => {
+    test('login method', async () => {
+      const result = await authService.login('admin@gmail.com', '111111');
 
+      expect(result).toEqual({ accessToken });
+    });
+    test('forget method', async () => {
+      const result = await authService.forget('admin@gmail.com');
+
+      expect(result).toEqual(true);
+    });
+ 
+    test('register method', async () => {
+      const result = await authService.register(authRegisterDTO);
+
+      expect(result).toEqual({ accessToken });
+    });
+  })
 })
